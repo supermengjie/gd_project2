@@ -1,0 +1,87 @@
+Level details
+--------------------
+Need to build the level somehow (Parsing a JSON object)
+Defining level pieces and what they include here
+	
+	First number = how difficult the piece
+	0 = No intrusion
+	1 = add 1 hazard
+	2 = add 2 hazards
+	3 = add 1 AI
+	4 = add 1 hazard and 1 AI
+	5 = end tile
+
+	Second number = what type of piece
+	0 - Nothing
+	1 - Ground
+	2 - Ground going up
+	3 - Building
+	4 - Building going up
+	5 - Building going down
+	6 - Building going up and down
+	7 - Building w gap
+	8 - Ground w Powerup
+	9 - Building w Powerup
+	
+	Full combined list details
+	--------------------------------------------
+	00 - Nothing
+	01 - Ground
+	02 - Ground going up
+	03 - Building
+	04 - Building going up
+	05 - Building going down
+	06 - Building going up and down
+	07 - Building w gap
+	08 - Ground w Powerup
+	09 - Building w Powerup
+	11 - Ground w 1 Hazard
+	12 - Ground going up w 1 Hazard
+	13 - Building w 1 Hazard
+	14 - Building going up w 1 Hazard
+	15 - Building going down w 1 Hazard
+	16 - Building going up and down w 1 Hazard
+	17 - Building w gap w 1 Hazard
+	18 - Ground w Powerup w 1 Hazard
+	19 - Building w Powerup w 1 Hazard
+	21 - Ground w 2 Hazards
+	22 - Ground going up w 2 Hazards
+	23 - Building w 2 Hazards
+	24 - Building going up w 2 Hazard
+	25 - Building going down w 2 Hazard
+	26 - Building going up and down w 2 Hazard
+	27 - Building w gap w 2 Hazard
+	28 - Ground w Powerup w 2 Hazard
+	29 - Building w Powerup w 2 Hazard
+	31 - Ground w 1 AI
+	32 - Ground going up w 1 AI
+	33 - Building w 1 AI
+	34 - Building going up w 1 AI
+	35 - Building going down w 1 AI
+	36 - Building going up and down w 1 AI
+	37 - Building w gap w 1 AI
+	38 - Ground w Powerup w 1 AI
+	39 - Building w Powerup w 1 AI
+	41 - Ground w 1 Hazard 1 AI
+	42 - Ground going up w 1 Hazard 1 AI
+	43 - Building w 1 Hazard 1 AI
+	44 - Building going up w 1 Hazard 1 AI
+	45 - Building going down w 1 Hazard 1 AI
+	46 - Building going up and down w 1 Hazard 1 AI
+	47 - Building w gap w 1 Hazard 1 AI
+	48 - Ground w Powerup w 1 Hazard 1 AI
+	49 - Building w Powerup w 1 Hazard 1 AI
+	51 - Finish ground
+	53 - Finish building
+	------------------------------------------------
+Rules for tiles:
+1) Randomly place hazard are AI in 1 of 3 places on a piece
+	Do not stack AI and Hazard
+2) Tile type = 0 implies no hazards
+3) End tile has only 1 type currently
+
+
+
+
+
+
