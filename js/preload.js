@@ -10,6 +10,7 @@ preloadState.prototype.preload = function(){
   game.load.spritesheet('settings','assets/images/settings.png');
   game.load.spritesheet('backButton', 'assets/images/back.png');
   game.load.spritesheet('pause','assets/images/pause.png');
+  game.load.spritesheet("horserun", "assets/images/HorseRun.png",624,460);
   //load in sprites, images, etc.
 };
 
