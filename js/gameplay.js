@@ -20,15 +20,25 @@ gameplayState.prototype.create = function () {
     game.state.start("Pause");
   }
 
-  this.player= game.add.sprite(100,game.world.height-500, "horserun");
+  //add player to the game 
+  	this.player= game.add.sprite(100,game.world.height-500, "horse");
+  	this.player.scale.setTo(0.5,0.5);
 	game.physics.arcade.enable(this.player);
-	this.player.body.gravity.y=100;
+	this.player.body.gravity.y=200;
 	this.player.body.collideWorldBounds = true;
 
-	this.player.animations.add("run", [0,1,2,3,4,5,6,7,8,9,10], 8, true);
+	//player animations
+	this.player.animations.add("run", [31,32,33,34,35,36,37,38,39,40,41], 6, true);
+	this.player.animations.add("buildup", [0,1,2,3,4,5,6], 8, true);
+	this.player.animations.add("charge", [7,8,9,10,11,12,13,14,15,16], 10, true);
+	this.player.animations.add("jump", [22,23,24,25,26,27,28,29,30], 3, true);
+	this.player.animations.add("dead", [17,18,19,20,21], 8, true);
+
 	this.player.animations.play("run");
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
+	this.player.offsetY=20;
+	//this.player.offsetX=;
 
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100; 
 	game.input.onDown.add(function(pointer) { 
@@ -43,7 +53,14 @@ gameplayState.prototype.create = function () {
 					this.player.body.acceleration.x = (100*3+100)*50;
    		  			this.charge=true; 
    		  			this.returned=false;    
-   		  		}else if(swipeCoordY2 < swipeCoordY - swipeMinDistance){ console.log("up");    this.player.body.velocity.y = -200;    }else if(swipeCoordY2 > swipeCoordY + swipeMinDistance){            console.log("down");        }    }, this);      
+   		  			this.player.animations.play("charge")
+   		  			game.time.events.add(1000, this.updateRun, this);
+   		  		}else if(swipeCoordY2 < swipeCoordY - swipeMinDistance){ 
+   		  			console.log("up");    
+   		  			this.player.body.velocity.y = -300;    
+   		  			this.player.animations.play("jump");
+   		  			game.time.events.add(3000, this.updateRun, this);
+   		  		}else if(swipeCoordY2 > swipeCoordY + swipeMinDistance){            console.log("down");        }    }, this);      
 
 
 };
@@ -62,11 +79,18 @@ gameplayState.prototype.update = function () {
 		if(this.player.x !== 100){
 			this.player.body.acceleration.x -=100;
 			this.return = true;
+
 		}
 	}
 	if(this.return && this.player.x <= 100)
 	{
 		this.player.body.acceleration.x =0;
+		
 	}
 
 };
+
+gameplayState.prototype.updateRun= function(){
+
+	this.player.animations.play("run");
+}
