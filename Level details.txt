@@ -78,7 +78,7 @@ Rules for tiles:
 1) Randomly place hazard are AI in 1 of 3 places on a piece
 	Do not stack AI and Hazard
 2) Tile type = 0 implies no hazards
-3) End tile has only 1 type currently
+3) End tile has only 2 types currently
 
 
 

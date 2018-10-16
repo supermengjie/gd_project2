@@ -11,6 +11,8 @@ preloadState.prototype.preload = function(){
   game.load.spritesheet('backButton', 'assets/images/back.png');
   game.load.spritesheet('pause','assets/images/pause.png');
   game.load.spritesheet("horserun", "assets/images/HorseRun.png",624,460);
+  game.load.text("testlevel", "assets/testlevel.json");
+  game.load.text("level", "assets/level.json");
   //load in sprites, images, etc.
 };
 
@@ -24,3 +26,5 @@ preloadState.prototype.update = function(){
 
 
 };
+
+
