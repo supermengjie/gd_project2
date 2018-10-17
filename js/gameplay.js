@@ -306,7 +306,7 @@ gameplayState.prototype.create = function () {
 gameplayState.prototype.update = function () {
 
   if(this.life != 0){
-		this.player.body.velocity.x = 400;
+		this.player.body.velocity.x = 500;
 	}
 	game.physics.arcade.overlap(this.player, this.fline, this.gamewon,null,this);
 	game.physics.arcade.collide(this.player, this.buildings);
@@ -321,7 +321,7 @@ gameplayState.prototype.update = function () {
   game.physics.arcade.overlap(this.player, this.healths, this.healthup, null, this);
   game.physics.arcade.overlap(this.player, this.horseshoes, this.powerup, null, this);
   game.physics.arcade.overlap(this.player, this.scientists, this.hitOrMiss, null, this);
-  	game.physics.arcade.overlap(this.scientists, this.buildings);
+  	game.physics.arcade.collide(this.scientists, this.buildings);
   	this.scientists.forEach(this.moveScientist, this);
 
 	if (this.cursors.right.isDown&&this.readytocharge){
@@ -357,12 +357,12 @@ gameplayState.prototype.update = function () {
 
 	if(this.charge){
 		if(this.player.x - this.positionFromCharge>700){
-			this.player.body.velocity.x =400;
+			this.player.body.velocity.x =500;
 			//this.charge = false;
 		}
 		else
 		{
-			this.player.body.velocity.x =600;
+			this.player.body.velocity.x =500;
 		}
 	}
 
