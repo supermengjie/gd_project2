@@ -68,7 +68,7 @@ gameplayState.prototype.create = function () {
 	console.log(levelData.Data.length);
 
 	function parseBlock(Type) {
-		if (Type === 1)	//Ground 
+		if (Type === 1)	//Ground
 		{
 			return "ground";
 		}
@@ -148,7 +148,6 @@ gameplayState.prototype.create = function () {
           console.log("down");
         }
       }, this);
-
 };
 
 gameplayState.prototype.update = function () {
@@ -175,7 +174,7 @@ gameplayState.prototype.update = function () {
 
 };
 
-gameplayState.prototype.updateRun= function(){
+gameplayState.prototype.updateRun = function(){
 
 	this.player.animations.play("run");
 }
@@ -190,5 +189,5 @@ gameplayState.prototype.updateRun= function(){
 //Ypos when passed should be max world position - position in the array * 600
 //Type should be Array value / 10
 gameplayState.prototype.parseEnemy = function(Type) {
-	
+
 };
