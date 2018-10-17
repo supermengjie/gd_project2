@@ -1,5 +1,6 @@
 let gameplayState = function() {
-
+	this.score=0;
+	this.readytocharge=true;
 };
 
 gameplayState.prototype.preload = function() {
@@ -46,14 +47,14 @@ gameplayState.prototype.create = function () {
 
   this.player.scale.setTo(0.5,0.5);
   game.physics.arcade.enable(this.player);
-  this.player.body.gravity.y=200;
+  this.player.body.gravity.y=1000;
   this.player.body.collideWorldBounds = true;
 
   //player animations
-  this.player.animations.add("run", [31,32,33,34,35,36,37,38,39,40,41], 6, true);
+  this.player.animations.add("run", [31,32,33,34,35,36,37,38,39,40,41], 16, true);
 	this.player.animations.add("buildup", [0,1,2,3,4,5,6], 8, true);
 	this.player.animations.add("charge", [7,8,9,10,11,12,13,14,15,16], 10, true);
-	this.player.animations.add("jump", [22,23,24,25,26,27,28,29,30], 3, true);
+	this.player.animations.add("jump", [22,23,24,25,26,27,28,29,30], 3, false);
 	this.player.animations.add("dead", [17,18,19,20,21], 8, true);
 	this.player.animations.play("run");
 	this.player.anchor.setTo(0.5,0.5);
@@ -172,6 +173,11 @@ gameplayState.prototype.create = function () {
 	}
 	console.log(levelData);
 
+	 this.cooldown= game.time.create();
+     //this.cooldown.add(Phaser.Timer.SECOND*5,this.endCooldown, this);
+     this.ctext= this.game.add.text(20,this.game.height-40,"Ready",{font:"40px Arial", fill: "#ff0"});
+     this.ctext.fixedToCamera= true;
+
   //Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
 	game.input.onDown.add(function(pointer) {
@@ -185,7 +191,7 @@ gameplayState.prototype.create = function () {
       {
         console.log("left");
       }
-			else if(swipeCoordX2 > swipeCoordX + swipeMinDistance)
+			else if((swipeCoordX2 > swipeCoordX + swipeMinDistance)&&this.readytocharge)
 			{
         console.log("right");
         this.player.body.acceleration.x = (100*3+100)*50;
@@ -193,17 +199,24 @@ gameplayState.prototype.create = function () {
    		  this.returned=false;
         this.player.animations.play("charge");
         game.time.events.add(1000, this.updateRun, this);
+        this.readytocharge=false;
+        game.time.events.add(3000, this.endCooldown,this);
+
+        //this.cooldown.add(Phaser.Timer.SECOND*2,this.endCooldown, this);
+        //this.cooldown.start();
+        this.ctext.text= "On Cooldown";
    		 }
-       else if(swipeCoordY2 < swipeCoordY - swipeMinDistance)
+       else if((swipeCoordY2 < swipeCoordY - swipeMinDistance)&& this.player.body.touching.down)
        {
-         console.log("up");
-   		   this.player.body.velocity.y = -300;
-         game.camera.y-=200;
-   		   this.player.animations.play("jump");
-   		   game.time.events.add(3000, this.updateRun, this);
+        	console.log("up");
+   			this.player.body.velocity.y = -1500;
+         	game.camera.y-=200;
+   		   	this.player.animations.play("jump");
+   		   	game.time.events.add(3000, this.updateRun, this);
    		  }
         else if(swipeCoordY2 > swipeCoordY + swipeMinDistance)
         {
+        	this.player.body.velocity.y = +2000;
           console.log("down");
         }
       }, this);
@@ -214,9 +227,14 @@ gameplayState.prototype.create = function () {
       game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
 
+
+
 };
 
 gameplayState.prototype.update = function () {
+	game.physics.arcade.collide(this.player, this.buildings);
+
+	this.player.body.velocity.x = 400;
 
   game.physics.arcade.collide(this.player, this.buildings);
   game.physics.arcade.collide(this.enemies, this.buildings);
@@ -228,7 +246,7 @@ gameplayState.prototype.update = function () {
 		//this.player.animations.play("left");
 	}
 	else if (this.cursors.right.isDown){
-		this.player.body.velocity.x = 150;
+		this.player.body.velocity.x = 350;
 		//this.player.animations.play("right");
 	}
 		if (this.cursors.up.isDown && this.player.body.touching.down){
@@ -263,3 +281,10 @@ gameplayState.prototype.updateRun= function(){
 gameplayState.prototype.hitOrMiss = function(player, enemy){
 	
 };
+
+gameplayState.prototype.endCooldown =function(){
+	console.log("cooldown ready to over");;
+	console.log("cooldown over");
+	this.ctext.text = "Ready";
+	this.readytocharge=true;
+}
