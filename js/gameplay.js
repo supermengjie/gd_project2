@@ -59,15 +59,37 @@ gameplayState.prototype.create = function () {
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
   this.player.offsetY=20;
+  this.player.offsetX=40;
 
 
-  //Building group which adds level components
+  	//Enemy group which contains the list of enemies
+  	this.enemies = game.add.group();
+  	this.enemies.enableBody = true;
+  	
+  	this.policeman = game.add.sprite(600, game.world.height-500, "policeman");
+  	this.policeman.animations.add("idle", [0,1], 2, true);
+  	this.policeman.animations.play("idle");
+  	this.policeman.scale.setTo(.35, .35);
+  	this.policeman.anchor.setTo(0, -.1);
+  	this.enemies.add(this.policeman);
+
+  	// this.scientist = game.add.sprite(800, game.world.height-500, "scientist");
+  	// this.scientist.animations.add("idle", [0,1], 6, true);
+  	// this.scientist.animations.play("idle");
+  	// this.scientist.scale.setTo(.35, .35);
+  	// this.scientist.anchor.setTo(0, -.25);
+  	// this.enemies.add(this.scientist);
+
+  	//let assettest = this.enemies.create(600, game.world.height-227, "policeman");
+
+	//Building group which adds level components
 	this.buildings = game.add.group();
 	this.buildings.enableBody = true;
 	//let assettest = this.buildings.create(0, game.world.height-600, "ground");
-	let levelData = game.cache.getJSON("testlevel");
+	let levelData = game.cache.getJSON("level");
 	console.log(levelData.Data.length);
 
+	//This function is to help place level components and make the level easier to edit and create
 	function parseBlock(Type) {
 		if (Type === 1)	//Ground
 		{
@@ -91,6 +113,7 @@ gameplayState.prototype.create = function () {
 		}
 	};
 
+	//this.scientist = new Enemy({x:1200, y:game.world.height-227}, "scientist", this.buildings);
 	for (let y = levelData.Data.length-1; y >= 0; --y)
 	{
 		for (let x = levelData.Data[y].length-1; x >= 0; --x)
@@ -100,16 +123,50 @@ gameplayState.prototype.create = function () {
 					let temp = this.buildings.create(x*600, game.world.height-227, parseBlock(levelData.Data[y][x]%10));
 					temp.enableBody = true;
 					temp.body.immovable = true;
+					if (levelData.Data[y][x]/10 > 1 && levelData.Data[y][x]/10 < 2)
+					{
+						let policeman = game.add.sprite(x*600, game.world.height-500, "policeman");
+  						policeman.animations.add("idle", [0,1], 2, true);
+  						policeman.animations.play("idle");
+  						policeman.scale.setTo(.35, .35);
+  						policeman.anchor.setTo(.3, -.1);
+  						this.enemies.add(policeman);
+					}
+					else if (levelData.Data[y][x]/10 > 2)
+					{
+						scientist = game.add.sprite(x*600, game.world.height-500, "scientist");
+  						scientist.animations.add("idle", [0,1], 6, true);
+  						scientist.animations.play("idle");
+  						scientist.scale.setTo(.35, .35);
+  						scientist.anchor.setTo(.1, -.25);
+  						this.enemies.add(scientist);
+					}
 				}
 				else{
 					let temp = this.buildings.create(x*600, game.world.height-600*(y+1)+373, parseBlock(levelData.Data[y][x]%10));
 					temp.enableBody = true;
 					temp.body.immovable = true;
+					console.log(levelData.Data[y][x]/10);
+					if (levelData.Data[y][x]/10 > 1 && levelData.Data[y][x]/10 < 2)
+					{
+						let policeman = game.add.sprite(x*600, game.world.height-500-600*(y), "policeman");
+  						policeman.animations.add("idle", [0,1], 2, true);
+  						policeman.animations.play("idle");
+  						policeman.scale.setTo(.35, .35);
+  						policeman.anchor.setTo(.1, -.1);
+  						this.enemies.add(policeman);
+					}
+					else if (levelData.Data[y][x]/10 > 2)
+					{
+						scientist = game.add.sprite(x*600, game.world.height-500-600*(y), "scientist");
+  						scientist.animations.add("idle", [0,1], 6, true);
+  						scientist.animations.play("idle");
+  						scientist.scale.setTo(.35, .35);
+  						scientist.anchor.setTo(.1, -.25);
+  						this.enemies.add(scientist);
+					}
 				}
 			}
-			//parseEnemy(0, 0, levelData.Data[x][y]/10);
-			// temp.enableBody = true;
-			// temp.body.immovable = true;
 			console.log(x + " " + y + " " + levelData.Data[y][x]);
 		}
 	}
@@ -162,6 +219,8 @@ gameplayState.prototype.create = function () {
 gameplayState.prototype.update = function () {
 
   game.physics.arcade.collide(this.player, this.buildings);
+  game.physics.arcade.collide(this.enemies, this.buildings);
+  game.physics.arcade.collide(this.player, this.enemies);
 	if (this.cursors.left.isDown){
 		this.player.body.velocity.x = -150;
 		//this.player.animations.play("left");

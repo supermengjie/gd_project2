@@ -26,6 +26,8 @@ preloadState.prototype.preload = function(){
   game.load.image("building", "assets/Images/3.png");
   game.load.image("buildingUp", "assets/Images/4.png");
   game.load.image("buildingDown", "assets/Images/5.png");
+  game.load.spritesheet("scientist", "assets/Images/ScientistSprite.png",669,626);
+  game.load.spritesheet("policeman", "assets/Images/PoliceSprite.png",269,712);
   //load in sprites, images, etc.
 };
 
