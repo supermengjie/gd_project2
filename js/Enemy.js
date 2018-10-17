@@ -1,48 +1,60 @@
-let Enemy = function(game) {
-    this.game = game;
-    // this.type = type;
-    this.speed = 500;
+let Enemy = function(pos, type, platform) {
+    this.type = type;
+    this.speed = 100;
     this.isDead = false;
-    this.dir = Phaser.LEFT;
+    this.platform = platform;
+    this.dir = Phaser.NONE;
 
-};
-
-Enemy.prototype.create = function() {
     // position
-    this.enemy = this.game.add.sprite(64, 200, "police");
+    this.enemy = game.add.sprite(pos.x, pos.y, type);
     this.enemy.anchor.set(0.5);
-    this.game.physics.arcade.enable(this.enemy);
+    game.physics.arcade.enable(this.enemy);
     // animation
-    this.enemy.animations.add(Phaser.LEFT, [0,1,2,3], 20, true);
-    this.enemy.animations.add(Phaser.RIGHT, [5,6,7,8], 20, true);
+    this.enemy.animations.add(Phaser.NONE, [0,1], 8, true);
+    this.enemy.animations.add(Phaser.RIGHT, [0,1], 8, true);
+    this.enemy.scale.x *= -1;
 
-    // this.enemy.body.immovable = true;
     this.enemy.enableBody = true;
     this.enemy.body.collideWorldBounds = true;
-
-    this.enemy.play(Phaser.LEFT);
-    this.move(Phaser.LEFT);
+    this.enemy.body.velocity.x = 0;
+    this.enemy.body.gravity.y = 300;
+    // this.enemy.play(this.dir);
+    this.move(this.dir);
 };
 
 Enemy.prototype.update = function() {
-    this.game.physics.arcade.collide(this.enemy, this.game.platforms);
+    game.physics.arcade.collide(this.enemy, this.platform);
+
+    // No x movement when falling down
+    if (this.enemy.body.velocity.y > 0) {
+        this.enemy.body.velocity.x = 0;
+    }
+    else if (this.dir === Phaser.RIGHT){
+        this.move(Phaser.RIGHT);
+    }
+
+    // TODO: This should be moved to gameplay.js ===============================
+    if (this.isDead) {
+        // TODO: change the tile
+        this.enemy.body.collideWorldBounds = false;
+    }
 };
 
 Enemy.prototype.move = function(direction) {
-    // this.dir = direction;
+    this.dir = direction;
     var speed = this.speed;
-    this.enemy.animations.play(direction)
+    this.enemy.animations.play(direction);
+
     if (direction === Phaser.NONE) {
-        this.enemy.body.velocity.x = this.enemy.body.velocity.y = 0;
-        return;
+        speed = 0;
     }
-
-    var speed = this.speed;
-    if (direction === Phaser.LEFT) {
-        speed = -speed;
-    }
-
-    if (direction === Phaser.LEFT || direction === Phaser.RIGHT) {
-        this.enemy.body.velocity.x = speed;
-    }
+    this.enemy.body.velocity.x = speed;
 };
+
+Enemy.prototype.getX = function() {
+    return this.enemy.x;
+}
+
+Enemy.prototype.flee = function() {
+    this.move(Phaser.RIGHT);
+}
