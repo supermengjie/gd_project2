@@ -261,5 +261,5 @@ gameplayState.prototype.updateRun= function(){
 };
 
 gameplayState.prototype.hitOrMiss = function(player, enemy){
-
+	
 };
