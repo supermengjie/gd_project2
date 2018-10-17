@@ -1,6 +1,7 @@
 let gameplayState = function() {
 	this.score=0;
 	this.readytocharge=true;
+	this.life= 3;
 };
 
 gameplayState.prototype.preload = function() {
@@ -60,7 +61,7 @@ gameplayState.prototype.create = function () {
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
   this.player.offsetY=20;
-  this.player.offsetX=40;
+  //this.player.offsetX=40;
 
 
   	//Enemy group which contains the list of enemies
@@ -184,8 +185,12 @@ gameplayState.prototype.create = function () {
 
 	 this.cooldown= game.time.create();
      //this.cooldown.add(Phaser.Timer.SECOND*5,this.endCooldown, this);
-     this.ctext= this.game.add.text(20,this.game.height-40,"Ready",{font:"40px Arial", fill: "#ff0"});
+     this.ctext= this.game.add.text(40,this.game.height-80,"Ready",{font:"40px Arial", fill: "#ff0"});
      this.ctext.fixedToCamera= true;
+
+     //for lifes
+     this.ltext= this.game.add.text(40,this.game.height-1100,this.life,{font:"40px Arial", fill: "#ff0"});
+     this.ltext.fixedToCamera= true;
 
   //Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
@@ -196,17 +201,20 @@ gameplayState.prototype.create = function () {
 		game.input.onUp.add(function(pointer) {
 			swipeCoordX2 = pointer.clientX;
 			swipeCoordY2 = pointer.clientY;
-			if(swipeCoordX2 < swipeCoordX - swipeMinDistance)
+	if(swipeCoordX2 < swipeCoordX - swipeMinDistance)
       {
         console.log("left");
       }
 			else if((swipeCoordX2 > swipeCoordX + swipeMinDistance)&&this.readytocharge)
 			{
         console.log("right");
-        this.player.body.acceleration.x = (100*3+100)*50;
-   		  this.charge=true;
+        this.player.body.acceleration.x = (100*3+100)*50; 
+   		this.charge=true;
    		  this.returned=false;
         this.player.animations.play("charge");
+        console.log("chared now:",this.charge);
+        this.player.body.velocity.y=0;
+        this.player.body.gravity.y=0;
         game.time.events.add(1000, this.updateRun, this);
         this.readytocharge=false;
         game.time.events.add(3000, this.endCooldown,this);
@@ -218,11 +226,11 @@ gameplayState.prototype.create = function () {
        else if((swipeCoordY2 < swipeCoordY - swipeMinDistance)&& this.player.body.touching.down)
        {
         	console.log("up");
-   			this.player.body.velocity.y = -1500;
+   			this.player.body.velocity.y = -1300;
          	game.camera.y-=200;
    		   	this.player.animations.play("jump");
    		   	game.time.events.add(3000, this.updateRun, this);
-   		  }
+   		 }
         else if(swipeCoordY2 > swipeCoordY + swipeMinDistance)
         {
         	this.player.body.velocity.y = +2000;
@@ -230,6 +238,15 @@ gameplayState.prototype.create = function () {
         }
       }, this);
 
+		this.fline=game.add.group();
+		this.fline.enableBody=true;
+		//finishline
+		//this.fline= game.add.sprite(200,0,"finishline");
+		//this.fline.body.immovable=true;
+		let templine = this.fline.create(game.world.width-800,0,"finishline");
+		templine.body.gravity.y =1000;
+
+		//added keyboard control for easy debug only.
       this.cursors = game.input.keyboard.createCursorKeys();
 
       //smooth camera follow
@@ -241,9 +258,11 @@ gameplayState.prototype.create = function () {
 };
 
 gameplayState.prototype.update = function () {
-	game.physics.arcade.collide(this.player, this.buildings);
 
 	this.player.body.velocity.x = 400;
+	game.physics.arcade.overlap(this.player, this.fline, this.gamewon,null,this);
+	game.physics.arcade.collide(this.player, this.buildings);
+	game.physics.arcade.collide(this.fline,this.buildings);
 
   game.physics.arcade.collide(this.player, this.buildings);
   game.physics.arcade.collide(this.enemies, this.buildings);
@@ -266,12 +285,20 @@ gameplayState.prototype.update = function () {
 	}
 
 	if(this.charge){
-		if(this.player.x -100 >100){
+		if(this.player.x -300 >100){
 			this.player.body.acceleration.x =0;
-			this.charge = false;
 		}
 	}
 
+	if(this.life === -1)
+	{
+		game.state.start('Gameover');
+	}
+
+	if(this.life === 100)
+	{
+		game.state.start('Win');
+	}
 	// if(!this.charge){
 	// 	if(this.player.x !== 100){
 	// 		this.player.body.acceleration.x -=100;
@@ -287,10 +314,13 @@ gameplayState.prototype.update = function () {
 
 gameplayState.prototype.updateRun= function(){
 
+	this.player.body.gravity.y=1000;
 	this.player.animations.play("run");
+	this.charge=false;
 };
 
 gameplayState.prototype.hitOrMiss = function(player, enemy){
+	console.log("charge:", this.charge);
 	if (this.charge) //Kill enemy
 	{
 		enemy.kill();
@@ -300,18 +330,32 @@ gameplayState.prototype.hitOrMiss = function(player, enemy){
 	}
 	else //Kill player
 	{
-		player.body.velocity.x = player.body.velocity.y = player.body.acceleration.x = player.body.acceleration.y = 0;
-		player.animations.play("dead");
+		game.camera.shake(0.05, 500)
+		enemy.kill();
+		if(this.life === 1){
+			this.life -=1;
+			this.ltext.text=this.life;
+			player.body.velocity.x = player.body.velocity.y = player.body.acceleration.x = player.body.acceleration.y = 0;
+			player.animations.play("dead");
+			game.time.events.add(2000, this.gameOver, this);
+			//this.gameOver;
+			//game.time.events.add(1000, this.gameOver, this);
+		}else{
+			this.life -=1;
+			this.ltext.text=this.life;
+
+		}
+
 	}
 	
 };
 
 gameplayState.prototype.endCooldown =function(){
-	console.log("cooldown ready to over");;
+	console.log("cooldown ready to over");
 	console.log("cooldown over");
-	this.ctext.text = "Ready";
+	this.ctext.text = "Charge Ready";
 	this.readytocharge=true;
-}
+};
 
 gameplayState.prototype.moveScientist = function(enemy) {
 	if (this.player.x+1000 > enemy.x)
@@ -319,3 +363,25 @@ gameplayState.prototype.moveScientist = function(enemy) {
 		enemy.body.velocity.x = 200;
 	}
 };
+
+
+gameplayState.prototype.gameOver =function(){
+	this.life = -1;
+	console.log(this.life);
+}
+
+gameplayState.prototype.gameEnd =function(){
+	this.life = 100;
+	console.log(this.life);
+}
+
+gameplayState.prototype.gamewon = function(player, templine){
+	//templine.kill();
+	this.player.animations.play("buildup");
+	this.player.body.velocity.x=0;
+	game.time.events.add(2000, this.gameEnd, this);
+
+
+};
+
+

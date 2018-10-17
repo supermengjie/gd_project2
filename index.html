@@ -9,8 +9,11 @@
 	<script type="text/javascript" src="js/settings.js"></script>
 	<script type="text/javascript" src="js/gameplay.js"></script>
 	<!-- <script type="text/javascript" src="js/pause.js"></script> -->
+
 	<script type="text/javascript" src="js/intro1.js"></script>
 	<script type="text/javascript" src="js/intro2.js"></script>
+	<script type="text/javascript" src="js/gameover.js"></script>
+	<script type="text/javascript" src="js/win.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -31,8 +34,10 @@
 	game.state.add("Settings", settingState);
 	game.state.add("Gameplay", gameplayState);
 	//game.state.add("Pause", pauseState);
-	game.state.add("Intro1",intro1State)
-	game.state.add("Intro2",intro2State) 
+	game.state.add("Intro1",intro1State);
+	game.state.add("Intro2",intro2State);
+	game.state.add("Gameover",gameoverState);
+	game.state.add("Win",winState);
 	game.state.start("Preload");
 
 

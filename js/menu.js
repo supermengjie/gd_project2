@@ -36,6 +36,3 @@ menuState.prototype.update = function(){
 };
 
 
-menuState.prototype.update = function(){
-
-};

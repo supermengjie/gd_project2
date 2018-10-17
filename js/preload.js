@@ -21,6 +21,9 @@ preloadState.prototype.preload = function(){
   game.load.spritesheet("horse", "assets/Images/HorseSprite.png",748,609);
   game.load.image("intro1","assets/Images/Intro1.png");
   game.load.image("intro2","assets/Images/Intro2.png");
+  game.load.image("_gameover","assets/Images/GameOver.png");
+  game.load.image("_win","assets/Images/Win.png");
+
   game.load.image("ground", "assets/Images/1Re.png");
   game.load.image("groundUp", "assets/Images/2Re.png");
   game.load.image("building", "assets/Images/3.png");
@@ -28,12 +31,13 @@ preloadState.prototype.preload = function(){
   game.load.image("buildingDown", "assets/Images/5.png");
   game.load.spritesheet("scientist", "assets/Images/ScientistSprite.png",669,626);
   game.load.spritesheet("policeman", "assets/Images/PoliceSprite.png",269,712);
+  game.load.spritesheet("finishline","assets/Images/FinishLine.png",748,242);
   //load in sprites, images, etc.
 };
 
 preloadState.prototype.create = function(){
 
-  game.state.start("Menu");
+  game.state.start("Win");
 
 };
 
