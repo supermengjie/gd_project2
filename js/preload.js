@@ -23,7 +23,8 @@ preloadState.prototype.preload = function(){
   game.load.image("intro2","assets/Images/Intro2.png");
   game.load.image("_gameover","assets/Images/GameOver.png");
   game.load.image("_win","assets/Images/Win.png");
-
+  game.load.image("carrot","assets/Images/Powerup.png");
+  game.load.image("horseshoe","assets/Images/Powerup2.png");
   game.load.image("ground", "assets/Images/1Re.png");
   game.load.image("groundUp", "assets/Images/2Re.png");
   game.load.image("building", "assets/Images/3.png");

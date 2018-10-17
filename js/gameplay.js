@@ -2,6 +2,7 @@ let gameplayState = function() {
 	this.score=0;
 	this.readytocharge=true;
 	this.life= 3;
+	this.supercharge = false;
 };
 
 gameplayState.prototype.preload = function() {
@@ -64,6 +65,7 @@ gameplayState.prototype.create = function () {
   //this.player.offsetX=40;
 
 
+
   	//Enemy group which contains the list of enemies
   	this.enemies = game.add.group();
   	this.enemies.enableBody = true;
@@ -77,14 +79,14 @@ gameplayState.prototype.create = function () {
   	// this.policeman.anchor.setTo(0, -.1);
   	// this.enemies.add(this.policeman);
 
-  	this.scientist = game.add.sprite(800, game.world.height-500, "scientist");
+  	/*this.scientist = game.add.sprite(800, game.world.height-500, "scientist");
   	this.scientist.animations.add("idle", [0,1], 6, true);
   	this.scientist.animations.play("idle");
   	this.scientist.scale.setTo(.35, .35);
   	this.scientist.anchor.setTo(.5, .5);
   	this.scientist.scale.x*=-1;
   	this.scientist.anchor.setTo(0, -.25);
-  	this.scientists.add(this.scientist);
+  	this.scientists.add(this.scientist);*/
   	//let assettest = this.enemies.create(600, game.world.height-227, "policeman");
 
 	//Building group which adds level components
@@ -183,6 +185,8 @@ gameplayState.prototype.create = function () {
 	}
 	console.log(levelData);
 
+	console.log(game.world.width);
+
 	 this.cooldown= game.time.create();
      //this.cooldown.add(Phaser.Timer.SECOND*5,this.endCooldown, this);
      this.ctext= this.game.add.text(40,this.game.height-80,"Ready",{font:"40px Arial", fill: "#ff0"});
@@ -191,6 +195,30 @@ gameplayState.prototype.create = function () {
      //for lifes
      this.ltext= this.game.add.text(40,this.game.height-1100,this.life,{font:"40px Arial", fill: "#ff0"});
      this.ltext.fixedToCamera= true;
+
+
+
+
+    this.healths = game.add.group();
+	this.healths.enableBody = true;
+	for (let i=1; i< 7; i++)
+     {
+     	
+    	let health = this.healths.create(5555*i, 0,"carrot")
+  		health.body.gravity.y =3000;
+  	}
+
+  	this.horseshoes =  game.add.group();
+  	this.horseshoes.enableBody = true;
+
+  	for (let i=1; i< 10; i++)
+     {
+     	
+    	let horseshoe = this.horseshoes.create(3750*i, 0,"horseshoe");
+  		horseshoe.body.gravity.y =3000;
+  	}
+  	
+
 
   //Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
@@ -205,24 +233,31 @@ gameplayState.prototype.create = function () {
       {
         console.log("left");
       }
-			else if((swipeCoordX2 > swipeCoordX + swipeMinDistance)&&this.readytocharge)
-			{
+	else if((swipeCoordX2 > swipeCoordX + swipeMinDistance)&&this.readytocharge)
+	{
         console.log("right");
         this.player.body.acceleration.x = (100*3+100)*50; 
    		this.charge=true;
-   		  this.returned=false;
+   		 this.returned=false;
         this.player.animations.play("charge");
         console.log("chared now:",this.charge);
         this.player.body.velocity.y=0;
         this.player.body.gravity.y=0;
         game.time.events.add(1000, this.updateRun, this);
-        this.readytocharge=false;
-        game.time.events.add(3000, this.endCooldown,this);
+
+        if(!this.supercharge)
+		{
+			this.readytocharge=false;
+			game.time.events.add(3000, this.endCooldown,this);
+			this.ctext.text= "Chagring On Cooldown";
+		}else{
+			game.time.events.add(10000, this.endSupercharge,this);
+		}
 
         //this.cooldown.add(Phaser.Timer.SECOND*2,this.endCooldown, this);
         //this.cooldown.start();
-        this.ctext.text= "On Cooldown";
-   		 }
+
+   	}
        else if((swipeCoordY2 < swipeCoordY - swipeMinDistance)&& this.player.body.touching.down)
        {
         	console.log("up");
@@ -263,25 +298,48 @@ gameplayState.prototype.update = function () {
 	game.physics.arcade.overlap(this.player, this.fline, this.gamewon,null,this);
 	game.physics.arcade.collide(this.player, this.buildings);
 	game.physics.arcade.collide(this.fline,this.buildings);
+	game.physics.arcade.collide(this.healths,this.buildings);
+	game.physics.arcade.collide(this.horseshoes,this.buildings);
 
   game.physics.arcade.collide(this.player, this.buildings);
   game.physics.arcade.collide(this.enemies, this.buildings);
   //game.physics.arcade.collide(this.player, this.enemies);
   game.physics.arcade.overlap(this.player, this.enemies, this.hitOrMiss, null, this);
+  game.physics.arcade.overlap(this.player, this.healths, this.healthup, null, this);
+  game.physics.arcade.overlap(this.player, this.horseshoes, this.powerup, null, this);
   game.physics.arcade.overlap(this.player, this.scientists, this.hitOrMiss, null, this);
   	game.physics.arcade.overlap(this.scientists, this.buildings);
   	this.scientists.forEach(this.moveScientist, this);
 
-	if (this.cursors.left.isDown){
-		this.player.body.velocity.x = -150;
-		//this.player.animations.play("left");
+	if (this.cursors.right.isDown&&this.readytocharge){
+		this.player.body.acceleration.x = (100*3+100)*50; 
+   		this.charge=true;
+   		 this.returned=false;
+        this.player.animations.play("charge");
+        console.log("chared now:",this.charge);
+        this.player.body.velocity.y=0;
+        this.player.body.gravity.y=0;
+        game.time.events.add(1000, this.updateRun, this);
+
+        if(!this.supercharge)
+		{
+			this.readytocharge=false;
+			game.time.events.add(3000, this.endCooldown,this);
+			this.ctext.text= "Chagring On Cooldown";
+		}else{
+			game.time.events.add(10000, this.endSupercharge,this);
+		}
+
 	}
-	else if (this.cursors.right.isDown){
-		this.player.body.velocity.x = 350;
+	else if (this.cursors.down.isDown){
+		this.player.body.velocity.y = +2000;
 		//this.player.animations.play("right");
 	}
 		if (this.cursors.up.isDown && this.player.body.touching.down){
-		this.player.body.velocity.y = -800;
+			this.player.body.velocity.y = -1300;
+         	game.camera.y-=200;
+   		   	this.player.animations.play("jump");
+   		   	game.time.events.add(3000, this.updateRun, this);
 	}
 
 	if(this.charge){
@@ -321,6 +379,22 @@ gameplayState.prototype.updateRun= function(){
 	this.charge=false;
 };
 
+
+gameplayState.prototype.healthup= function(player, carrot){
+	carrot.kill();
+	this.life+=1;
+	this.ltext.text= this.life;
+
+
+};
+
+gameplayState.prototype.powerup= function(player, horsehoe){
+	horsehoe.kill();
+	this.supercharge=true;
+
+
+};
+
 gameplayState.prototype.hitOrMiss = function(player, enemy){
 	console.log("charge:", this.charge);
 	if (this.charge) //Kill enemy
@@ -352,6 +426,10 @@ gameplayState.prototype.hitOrMiss = function(player, enemy){
 
 	}
 	
+};
+
+gameplayState.prototype.endSupercharge =function(){
+	this.supercharge=false;	
 };
 
 gameplayState.prototype.endCooldown =function(){
