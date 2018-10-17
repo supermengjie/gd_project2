@@ -12,6 +12,8 @@ gameplayState.prototype.create = function () {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
+  game.world.setBounds(0, 0, 27000, 3227);
+
   //ADDING PAUSE BUTTON
   my_image = game.add.button(100,100,'pause',onClickPause);
   my_image.scale.setTo(0.2,0.2);
@@ -25,14 +27,11 @@ gameplayState.prototype.create = function () {
 
   //START PAUSE STATE WHEN PAUSE BUTTON IS PRESSED
   function onClickPause(){
-    //game.state.start("Pause");
     game.paused = true;
-    // Then add the menu
     menu = game.add.sprite(game.world.width/2-400, game.world.height/2-315, 'pauseMenu');
     my_image.destroy();
     my_image = game.add.button(100,100,'play',onClickPlay);
     my_image.scale.setTo(0.2,0.2);
-    //menu.anchor.setTo(0.5, 0.5);
   }
 
   function onClickPlay(){
@@ -44,13 +43,14 @@ gameplayState.prototype.create = function () {
   }
 
   this.player= game.add.sprite(100,game.world.height-500, "horse");
-  this.player.scale.setTo(0.25,0.25);
+
+  this.player.scale.setTo(0.5,0.5);
   game.physics.arcade.enable(this.player);
   this.player.body.gravity.y=200;
   this.player.body.collideWorldBounds = true;
 
   //player animations
-	this.player.animations.add("run", [31,32,33,34,35,36,37,38,39,40,41], 6, true);
+  this.player.animations.add("run", [31,32,33,34,35,36,37,38,39,40,41], 6, true);
 	this.player.animations.add("buildup", [0,1,2,3,4,5,6], 8, true);
 	this.player.animations.add("charge", [7,8,9,10,11,12,13,14,15,16], 10, true);
 	this.player.animations.add("jump", [22,23,24,25,26,27,28,29,30], 3, true);
@@ -58,10 +58,10 @@ gameplayState.prototype.create = function () {
 	this.player.animations.play("run");
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
- 	 this.player.offsetY=20;
- 	 this.player.body.velocity.x +=100;
+  this.player.offsetY=20;
 
-	//Building group which adds level components
+
+  //Building group which adds level components
 	this.buildings = game.add.group();
 	this.buildings.enableBody = true;
 	//let assettest = this.buildings.create(0, game.world.height-600, "ground");
@@ -110,12 +110,12 @@ gameplayState.prototype.create = function () {
 			//parseEnemy(0, 0, levelData.Data[x][y]/10);
 			// temp.enableBody = true;
 			// temp.body.immovable = true;
-			//console.log(x + " " + y + " " + levelData.Data[y][x]);
+			console.log(x + " " + y + " " + levelData.Data[y][x]);
 		}
 	}
-	//console.log(levelData);
+	console.log(levelData);
 
-	//Controls
+  //Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
 	game.input.onDown.add(function(pointer) {
 		swipeCoordX = pointer.clientX;
@@ -140,8 +140,8 @@ gameplayState.prototype.create = function () {
        else if(swipeCoordY2 < swipeCoordY - swipeMinDistance)
        {
          console.log("up");
-   		   this.player.body.velocity.y = -1000;
-   		   this.player.body.velocity.x = 200;
+   		   this.player.body.velocity.y = -300;
+         game.camera.y-=200;
    		   this.player.animations.play("jump");
    		   game.time.events.add(3000, this.updateRun, this);
    		  }
@@ -151,12 +151,17 @@ gameplayState.prototype.create = function () {
         }
       }, this);
 
+      this.cursors = game.input.keyboard.createCursorKeys();
 
-		this.cursors = game.input.keyboard.createCursorKeys();
+      //smooth camera follow
+      game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+
 };
 
 gameplayState.prototype.update = function () {
-	game.physics.arcade.collide(this.player, this.buildings);
+
+  game.physics.arcade.collide(this.player, this.buildings);
 	if (this.cursors.left.isDown){
 		this.player.body.velocity.x = -150;
 		//this.player.animations.play("left");
@@ -169,7 +174,6 @@ gameplayState.prototype.update = function () {
 		this.player.body.velocity.y = -800;
 	}
 
-
 	if(this.charge){
 		if(this.player.x -100 >100){
 			this.player.body.acceleration.x =0;
@@ -177,33 +181,20 @@ gameplayState.prototype.update = function () {
 		}
 	}
 
-/*	if(!this.charge){
-		if(this.player.x !== 100){
-			this.player.body.acceleration.x -=100;
-			this.return = true;
-		}
-	}
-	if(this.return && this.player.x <= 100)
-	{
-		this.player.body.acceleration.x =0;
-	}*/
+	// if(!this.charge){
+	// 	if(this.player.x !== 100){
+	// 		this.player.body.acceleration.x -=100;
+	// 		this.return = true;
+	// 	}
+	// }
+	// if(this.return && this.player.x <= 100)
+	// {
+	// 	this.player.body.acceleration.x =0;
+	// }
 
 };
 
-gameplayState.prototype.updateRun = function(){
+gameplayState.prototype.updateRun= function(){
 
 	this.player.animations.play("run");
 }
-
-//Call this function to place blocks using the level code
-//Xpos when passed should be position in the array * 600
-//Ypos when passed should be max world position - position in the array * 600
-//Type should be Array value % 10
-
-//Call this function to place enemies in the level
-//Xpos when passed should be position in the array * 600
-//Ypos when passed should be max world position - position in the array * 600
-//Type should be Array value / 10
-gameplayState.prototype.parseEnemy = function(Type) {
-
-};
