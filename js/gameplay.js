@@ -58,7 +58,7 @@ gameplayState.prototype.create = function () {
 	this.player.animations.play("run");
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
-  this.player.offsetY=20;
+	this.player.offsetY=20;
 
 	//Building group which adds level components
 	this.buildings = game.add.group();
@@ -109,10 +109,10 @@ gameplayState.prototype.create = function () {
 			//parseEnemy(0, 0, levelData.Data[x][y]/10);
 			// temp.enableBody = true;
 			// temp.body.immovable = true;
-			console.log(x + " " + y + " " + levelData.Data[y][x]);
+			//console.log(x + " " + y + " " + levelData.Data[y][x]);
 		}
 	}
-	console.log(levelData);
+	//console.log(levelData);
 
 	//Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
