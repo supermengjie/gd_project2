@@ -201,20 +201,20 @@ gameplayState.prototype.create = function () {
 
     this.healths = game.add.group();
 	this.healths.enableBody = true;
-	for (let i=1; i< 7; i++)
+	for (let i=1; i< 5; i++)
      {
      	
-    	let health = this.healths.create(5555*i, 0,"carrot")
+    	let health = this.healths.create(7555*i, 0,"carrot")
   		health.body.gravity.y =3000;
   	}
 
   	this.horseshoes =  game.add.group();
   	this.horseshoes.enableBody = true;
 
-  	for (let i=1; i< 10; i++)
+  	for (let i=1; i< 6; i++)
      {
      	
-    	let horseshoe = this.horseshoes.create(3750*i, 0,"horseshoe");
+    	let horseshoe = this.horseshoes.create(4750*i, 0,"horseshoe");
   		horseshoe.body.gravity.y =3000;
   	}
   	
