@@ -94,15 +94,17 @@ gameplayState.prototype.create = function () {
 	{
 		for (let x = levelData.Data[y].length-1; x >= 0; --x)
 		{
-			if (y === 0){
-				let temp = this.buildings.create(x*600, game.world.height-600*(y+1), parseBlock(levelData.Data[y][x]%10));
-				temp.enableBody = true;
-			temp.body.immovable = true;
-			}
-			else{
-				let temp = this.buildings.create(x*600, game.world.height-600*(y+1)+400, parseBlock(levelData.Data[y][x]%10));
-				temp.enableBody = true;
-			temp.body.immovable = true;
+			if (levelData.Data[y][x] != 0){
+				if (y === 0){
+					let temp = this.buildings.create(x*600, game.world.height-227, parseBlock(levelData.Data[y][x]%10));
+					temp.enableBody = true;
+					temp.body.immovable = true;
+				}
+				else{
+					let temp = this.buildings.create(x*600, game.world.height-600*(y+1)+373, parseBlock(levelData.Data[y][x]%10));
+					temp.enableBody = true;
+					temp.body.immovable = true;
+				}
 			}
 			//parseEnemy(0, 0, levelData.Data[x][y]/10);
 			// temp.enableBody = true;

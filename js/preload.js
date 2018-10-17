@@ -21,9 +21,11 @@ preloadState.prototype.preload = function(){
   game.load.spritesheet("horse", "assets/Images/HorseSprite.png",748,609);
   game.load.image("intro1","assets/Images/Intro1.png");
   game.load.image("intro2","assets/Images/Intro2.png");
-  game.load.image("ground", "assets/Images/1.png");
-  game.load.image("groundUp", "assets/Images/2.png");
+  game.load.image("ground", "assets/Images/1Re.png");
+  game.load.image("groundUp", "assets/Images/2Re.png");
   game.load.image("building", "assets/Images/3.png");
+  game.load.image("buildingUp", "assets/Images/4.png");
+  game.load.image("buildingDown", "assets/Images/5.png");
   //load in sprites, images, etc.
 };
 

@@ -16,7 +16,10 @@ intro2State.prototype.create = function(){
 };
 
 intro2State.prototype.update = function(){
-
+if (this.keys.down.isDown)
+	{
+		game.state.start("Menu");
+	}
 };
 
 intro2State.prototype.gotoNextstate = function(){

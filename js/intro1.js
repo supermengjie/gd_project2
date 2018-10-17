@@ -11,12 +11,15 @@ intro1State.prototype.create = function(){
   game.physics.enable(this.intro1pic, Phaser.Physics.ARCADE);
   this.intro1pic.body.velocity.y -= 100
   game.time.events.add(14000, this.gotoNextstate, this);
-
+  this.keys = game.input.keyboard.createCursorKeys();
 
 };
 
 intro1State.prototype.update = function(){
-
+	if (this.keys.down.isDown)
+	{
+		game.state.start("Menu");
+	}
 };
 
 intro1State.prototype.gotoNextstate = function(){
