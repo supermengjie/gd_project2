@@ -212,7 +212,7 @@ gameplayState.prototype.create = function () {
 	this.healths.enableBody = true;
 	for (let i=1; i< 2; i++)
      {
-     	
+
     	let health = this.healths.create(10000*i, 0,"carrot")
   		health.body.gravity.y =3000;
   	}
@@ -222,7 +222,7 @@ gameplayState.prototype.create = function () {
 
   	for (let i=1; i< 3; i++)
      {
-     	
+
     	let horseshoe = this.horseshoes.create(7555*i, 0,"horseshoe");
   		horseshoe.body.gravity.y =3000;
   	}
@@ -246,7 +246,7 @@ gameplayState.prototype.create = function () {
 	{
         console.log("right");
         this.positionFromCharge = this.player.x;
-        this.player.body.acceleration.x = (100*3+100)*50; 
+        this.player.body.acceleration.x = (100*3+100)*50;
    		this.charge=true;
    		this.returned=false;
         this.player.animations.play("charge");
@@ -260,7 +260,7 @@ gameplayState.prototype.create = function () {
 		{
 			this.readytocharge=false;
 			game.time.events.add(3000, this.endCooldown,this);
-			this.ctext.text= "Chagring On Cooldown";
+			this.ctext.text= "Charging On Cooldown";
 		}else{
 			game.time.events.add(10000, this.endSupercharge,this);
 		}
@@ -338,7 +338,7 @@ gameplayState.prototype.update = function () {
 		{
 			this.readytocharge=false;
 			game.time.events.add(3000, this.endCooldown,this);
-			this.ctext.text= "Chagring On Cooldown";
+			this.ctext.text= "Charging On Cooldown";
 		}else{
 			game.time.events.add(10000, this.endSupercharge,this);
 		}
