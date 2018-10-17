@@ -45,6 +45,7 @@ gameplayState.prototype.create = function () {
     my_image.scale.setTo(0.2,0.2);
   }
 
+  	//Player physics and animations
  	this.player= game.add.sprite(100,game.world.height-500, "horserun");
 	game.physics.arcade.enable(this.player);
 	this.player.body.gravity.y=100;
@@ -55,8 +56,19 @@ gameplayState.prototype.create = function () {
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
 
+	//Building group which adds level components
 	this.buildings = game.add.group();
 	this.buildings.enablebody = true;
+	let levelData = game.cache.getJSON("testlevel");
+	for (let x = 0; x < levelData.length; ++x)
+	{
+		for (let y = 0; y < levelData[x].length; ++y)
+		{
+			let temp = this.buildings.create(x*600, game.world.height-600*(y+1), parseBlock(levelData[x][y]%10));
+			//parseEnemy(0, 0, levelData[x][y]/10);
+		}
+	}
+	console.log(levelData);
 
 	//Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
@@ -74,7 +86,6 @@ gameplayState.prototype.create = function () {
    		  			this.returned=false;
    		  		}else if(swipeCoordY2 < swipeCoordY - swipeMinDistance){ console.log("up");    this.player.body.velocity.y = -200;    }
             else if(swipeCoordY2 > swipeCoordY + swipeMinDistance){            console.log("down");        }    }, this);
-
 
 };
 
@@ -101,31 +112,37 @@ gameplayState.prototype.update = function () {
 
 };
 
-//Call this function to place blocks using the level
-gameplayState.prototype.parseBlock = function(Xpos, Ypos, Type) {
+//Call this function to place blocks using the level code
+//Xpos when passed should be position in the array * 600
+//Ypos when passed should be max world position - position in the array * 600
+//Type should be Array value % 10
+gameplayState.prototype.parseBlock = function(Type) {
 	if (Type === 1)	//Ground 
 	{
-		let temp = this.buildings.create(Xpos, Ypos, "ground");
+		return "ground";
 	}
 	else if (Type === 2) //Ground going up
 	{
-		let temp = this.buildings.create(Xpos, Ypos, "groundUp");
+		return "groundUp";
 	}
 	else if (Type === 3) //Building
 	{
-		let temp = this.buildings.create(Xpos, Ypos, "building");
+		return "building";
 	}
 	else if (Type === 4) //Building going up
 	{
-		let temp = this.buildings.create(Xpos, Ypos, "buildingUp");
+		return "buildingUp";
 	}
 	else if (Type === 5) //Building going down
 	{
-		let temp = this.buildings.create(Cpos, Ypos, "buildingDown");
+		return "buildingDown";
 	}
 };
 
-//Call this function to place enemies using the level
+//Call this function to place enemies in the level
+//Xpos when passed should be position in the array * 600
+//Ypos when passed should be max world position - position in the array * 600
+//Type should be Array value / 10
 gameplayState.prototype.parseEnemy = function(Xpos, Ypos, Type) {
 	
 };
