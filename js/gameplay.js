@@ -58,14 +58,52 @@ gameplayState.prototype.create = function () {
 
 	//Building group which adds level components
 	this.buildings = game.add.group();
-	this.buildings.enablebody = true;
+	this.buildings.enableBody = true;
+	//let assettest = this.buildings.create(0, game.world.height-600, "ground");
 	let levelData = game.cache.getJSON("testlevel");
-	for (let x = 0; x < levelData.length; ++x)
-	{
-		for (let y = 0; y < levelData[x].length; ++y)
+	console.log(levelData.Data.length);
+
+	function parseBlock(Type) {
+		if (Type === 1)	//Ground 
 		{
-			let temp = this.buildings.create(x*600, game.world.height-600*(y+1), parseBlock(levelData[x][y]%10));
-			//parseEnemy(0, 0, levelData[x][y]/10);
+			return "ground";
+		}
+		else if (Type === 2) //Ground going up
+		{
+			return "groundUp";
+		}
+		else if (Type === 3) //Building
+		{
+			return "building";
+		}
+		else if (Type === 4) //Building going up
+		{
+			return "buildingUp";
+		}
+		else if (Type === 5) //Building going down
+		{
+			return "buildingDown";
+		}
+	};
+
+	for (let y = levelData.Data.length-1; y >= 0; --y)
+	{
+		for (let x = levelData.Data[y].length-1; x >= 0; --x)
+		{
+			if (y === 0){
+				let temp = this.buildings.create(x*600, game.world.height-600*(y+1), parseBlock(levelData.Data[y][x]%10));
+				temp.enableBody = true;
+			temp.body.immovable = true;
+			}
+			else{
+				let temp = this.buildings.create(x*600, game.world.height-600*(y+1)+400, parseBlock(levelData.Data[y][x]%10));
+				temp.enableBody = true;
+			temp.body.immovable = true;
+			}
+			//parseEnemy(0, 0, levelData.Data[x][y]/10);
+			// temp.enableBody = true;
+			// temp.body.immovable = true;
+			console.log(x + " " + y + " " + levelData.Data[y][x]);
 		}
 	}
 	console.log(levelData);
@@ -90,6 +128,7 @@ gameplayState.prototype.create = function () {
 };
 
 gameplayState.prototype.update = function () {
+	game.physics.arcade.collide(this.player, this.buildings);
 
 
 	if(this.charge){
@@ -116,33 +155,11 @@ gameplayState.prototype.update = function () {
 //Xpos when passed should be position in the array * 600
 //Ypos when passed should be max world position - position in the array * 600
 //Type should be Array value % 10
-gameplayState.prototype.parseBlock = function(Type) {
-	if (Type === 1)	//Ground 
-	{
-		return "ground";
-	}
-	else if (Type === 2) //Ground going up
-	{
-		return "groundUp";
-	}
-	else if (Type === 3) //Building
-	{
-		return "building";
-	}
-	else if (Type === 4) //Building going up
-	{
-		return "buildingUp";
-	}
-	else if (Type === 5) //Building going down
-	{
-		return "buildingDown";
-	}
-};
 
 //Call this function to place enemies in the level
 //Xpos when passed should be position in the array * 600
 //Ypos when passed should be max world position - position in the array * 600
 //Type should be Array value / 10
-gameplayState.prototype.parseEnemy = function(Xpos, Ypos, Type) {
+gameplayState.prototype.parseEnemy = function(Type) {
 	
 };
