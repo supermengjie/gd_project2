@@ -292,11 +292,13 @@ gameplayState.prototype.update = function () {
 
 	if(this.life === -1)
 	{
+		this.life=3;
 		game.state.start('Gameover');
 	}
 
 	if(this.life === 100)
 	{
+		this.life=3;
 		game.state.start('Win');
 	}
 	// if(!this.charge){
@@ -327,6 +329,8 @@ gameplayState.prototype.hitOrMiss = function(player, enemy){
 		//enemy.body.velocity.y = 800;
 		//this.enemies.remove(enemy);
 		//enemy.collideWorldBounds = false;
+	}else if(this.player.body.touching.down &&enemy.body.touching.up){
+		enemy.kill();
 	}
 	else //Kill player
 	{
@@ -366,6 +370,7 @@ gameplayState.prototype.moveScientist = function(enemy) {
 
 
 gameplayState.prototype.gameOver =function(){
+	this.player.kill();
 	this.life = -1;
 	console.log(this.life);
 }
