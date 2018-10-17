@@ -220,7 +220,9 @@ gameplayState.prototype.update = function () {
 
   game.physics.arcade.collide(this.player, this.buildings);
   game.physics.arcade.collide(this.enemies, this.buildings);
-  game.physics.arcade.collide(this.player, this.enemies);
+  //game.physics.arcade.collide(this.player, this.enemies);
+  game.physics.arcade.overlap(this.player, this.enemies, this.hitOrMiss, null, this);
+
 	if (this.cursors.left.isDown){
 		this.player.body.velocity.x = -150;
 		//this.player.animations.play("left");
@@ -256,4 +258,8 @@ gameplayState.prototype.update = function () {
 gameplayState.prototype.updateRun= function(){
 
 	this.player.animations.play("run");
-}
+};
+
+gameplayState.prototype.hitOrMiss = function(player, enemy){
+
+};
