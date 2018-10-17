@@ -294,7 +294,9 @@ gameplayState.prototype.create = function () {
 
 gameplayState.prototype.update = function () {
 
-	this.player.body.velocity.x = 400;
+	if (this.life != 0){
+		this.player.body.velocity.x = 400;
+	}
 	game.physics.arcade.overlap(this.player, this.fline, this.gamewon,null,this);
 	game.physics.arcade.collide(this.player, this.buildings);
 	game.physics.arcade.collide(this.fline,this.buildings);
