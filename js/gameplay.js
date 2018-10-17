@@ -112,7 +112,7 @@ gameplayState.prototype.create = function () {
 			//console.log(x + " " + y + " " + levelData.Data[y][x]);
 		}
 	}
-	//console.log(levelData);
+	console.log(levelData);
 
 	//Controls
 	let swipeCoordX, swipeCoordY, swipeCoordX2, swipeCoordY2, swipeMinDistance = 100;
