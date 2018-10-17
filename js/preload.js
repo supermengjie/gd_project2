@@ -37,7 +37,7 @@ preloadState.prototype.preload = function(){
 
 preloadState.prototype.create = function(){
 
-  game.state.start("Win");
+  game.state.start("Menu");
 
 };
 
