@@ -8,6 +8,9 @@ let gameplayState = function() {
 
 gameplayState.prototype.preload = function() {
 
+  game.load.audio('powerup', 'assets/powerup.mp3');
+  game.load.audio('collide', 'assets/collide.mp3');
+  game.load.audio('music', 'assets/background_music.mp3');
 
 };
 
@@ -17,6 +20,11 @@ gameplayState.prototype.create = function () {
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
   game.world.setBounds(0, 0, 36000, 3227);
+
+  music = game.add.audio("music");
+  music.play('',0,1,true);
+  //powerup = game.add.audio('powerup');
+
 
   //ADDING PAUSE BUTTON
   my_image = game.add.button(100,100,'pause',onClickPause);
@@ -72,7 +80,7 @@ gameplayState.prototype.create = function () {
   	this.enemies.enableBody = true;
   	this.scientists = game.add.group();
   	this.scientists.enableBody = true;
-  	
+
   	// this.policeman = game.add.sprite(600, game.world.height-500, "policeman");
   	// this.policeman.animations.add("idle", [0,1], 2, true);
   	// this.policeman.animations.play("idle");
@@ -218,7 +226,7 @@ gameplayState.prototype.create = function () {
     	let horseshoe = this.horseshoes.create(7555*i, 0,"horseshoe");
   		horseshoe.body.gravity.y =3000;
   	}
-  	
+
 
 
   //Controls
@@ -297,7 +305,7 @@ gameplayState.prototype.create = function () {
 
 gameplayState.prototype.update = function () {
 
-	if (this.life != 0){
+  if(this.life != 0){
 		this.player.body.velocity.x = 400;
 	}
 	game.physics.arcade.overlap(this.player, this.fline, this.gamewon,null,this);
@@ -317,7 +325,7 @@ gameplayState.prototype.update = function () {
   	this.scientists.forEach(this.moveScientist, this);
 
 	if (this.cursors.right.isDown&&this.readytocharge){
-		this.player.body.acceleration.x = (100*3+100)*50; 
+		this.player.body.acceleration.x = (100*3+100)*50;
    		this.charge=true;
    		 this.returned=false;
         this.player.animations.play("charge");
@@ -403,6 +411,8 @@ gameplayState.prototype.healthup= function(player, carrot){
 };
 
 gameplayState.prototype.powerup= function(player, horsehoe){
+  snd = game.add.audio("powerup");
+  snd.play();
 	horsehoe.kill();
 	this.supercharge=true;
 
@@ -422,6 +432,8 @@ gameplayState.prototype.hitOrMiss = function(player, enemy){
 	}
 	else //Kill player
 	{
+    collide = game.add.audio('collide');
+    collide.play();
 		game.camera.shake(0.05, 500)
 		enemy.kill();
 		if(this.life === 1){
@@ -439,11 +451,11 @@ gameplayState.prototype.hitOrMiss = function(player, enemy){
 		}
 
 	}
-	
+
 };
 
 gameplayState.prototype.endSupercharge =function(){
-	this.supercharge=false;	
+	this.supercharge=false;
 };
 
 gameplayState.prototype.endCooldown =function(){
@@ -480,5 +492,3 @@ gameplayState.prototype.gamewon = function(player, templine){
 
 
 };
-
-
