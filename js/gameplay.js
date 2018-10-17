@@ -306,7 +306,7 @@ gameplayState.prototype.create = function () {
 gameplayState.prototype.update = function () {
 
   if(this.life != 0){
-		this.player.body.velocity.x = 500;
+		this.player.body.velocity.x = 400;
 	}
 	game.physics.arcade.overlap(this.player, this.fline, this.gamewon,null,this);
 	game.physics.arcade.collide(this.player, this.buildings);
@@ -357,12 +357,12 @@ gameplayState.prototype.update = function () {
 
 	if(this.charge){
 		if(this.player.x - this.positionFromCharge>700){
-			this.player.body.velocity.x =500;
+			this.player.body.velocity.x =400;
 			//this.charge = false;
 		}
 		else
 		{
-			this.player.body.velocity.x =500;
+			this.player.body.velocity.x =400;
 		}
 	}
 
