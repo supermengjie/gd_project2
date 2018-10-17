@@ -44,7 +44,7 @@ gameplayState.prototype.create = function () {
   }
 
   this.player= game.add.sprite(100,game.world.height-500, "horse");
-  this.player.scale.setTo(0.5,0.5);
+  this.player.scale.setTo(0.25,0.25);
   game.physics.arcade.enable(this.player);
   this.player.body.gravity.y=200;
   this.player.body.collideWorldBounds = true;
@@ -58,7 +58,8 @@ gameplayState.prototype.create = function () {
 	this.player.animations.play("run");
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
-	this.player.offsetY=20;
+ 	 this.player.offsetY=20;
+ 	 this.player.body.velocity.x +=100;
 
 	//Building group which adds level components
 	this.buildings = game.add.group();
@@ -139,7 +140,8 @@ gameplayState.prototype.create = function () {
        else if(swipeCoordY2 < swipeCoordY - swipeMinDistance)
        {
          console.log("up");
-   		   this.player.body.velocity.y = -300;
+   		   this.player.body.velocity.y = -1000;
+   		   this.player.body.velocity.x = 200;
    		   this.player.animations.play("jump");
    		   game.time.events.add(3000, this.updateRun, this);
    		  }
@@ -148,10 +150,24 @@ gameplayState.prototype.create = function () {
           console.log("down");
         }
       }, this);
+
+
+		this.cursors = game.input.keyboard.createCursorKeys();
 };
 
 gameplayState.prototype.update = function () {
 	game.physics.arcade.collide(this.player, this.buildings);
+	if (this.cursors.left.isDown){
+		this.player.body.velocity.x = -150;
+		//this.player.animations.play("left");
+	}
+	else if (this.cursors.right.isDown){
+		this.player.body.velocity.x = 150;
+		//this.player.animations.play("right");
+	}
+		if (this.cursors.up.isDown && this.player.body.touching.down){
+		this.player.body.velocity.y = -800;
+	}
 
 
 	if(this.charge){
@@ -161,7 +177,7 @@ gameplayState.prototype.update = function () {
 		}
 	}
 
-	if(!this.charge){
+/*	if(!this.charge){
 		if(this.player.x !== 100){
 			this.player.body.acceleration.x -=100;
 			this.return = true;
@@ -170,7 +186,7 @@ gameplayState.prototype.update = function () {
 	if(this.return && this.player.x <= 100)
 	{
 		this.player.body.acceleration.x =0;
-	}
+	}*/
 
 };
 
