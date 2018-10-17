@@ -13,7 +13,7 @@ gameplayState.prototype.create = function () {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  game.world.setBounds(0, 0, 27000, 3227);
+  game.world.setBounds(0, 0, 36000, 3227);
 
   //ADDING PAUSE BUTTON
   my_image = game.add.button(100,100,'pause',onClickPause);
@@ -55,7 +55,7 @@ gameplayState.prototype.create = function () {
 	this.player.animations.add("buildup", [0,1,2,3,4,5,6], 8, true);
 	this.player.animations.add("charge", [7,8,9,10,11,12,13,14,15,16], 10, true);
 	this.player.animations.add("jump", [22,23,24,25,26,27,28,29,30], 3, false);
-	this.player.animations.add("dead", [17,18,19,20,21], 8, true);
+	this.player.animations.add("dead", [17,18,19,20,21], 8, false);
 	this.player.animations.play("run");
 	this.player.anchor.setTo(0.5,0.5);
 	this.player.scale.x *= -1;
@@ -66,21 +66,24 @@ gameplayState.prototype.create = function () {
   	//Enemy group which contains the list of enemies
   	this.enemies = game.add.group();
   	this.enemies.enableBody = true;
+  	this.scientists = game.add.group();
+  	this.scientists.enableBody = true;
   	
-  	this.policeman = game.add.sprite(600, game.world.height-500, "policeman");
-  	this.policeman.animations.add("idle", [0,1], 2, true);
-  	this.policeman.animations.play("idle");
-  	this.policeman.scale.setTo(.35, .35);
-  	this.policeman.anchor.setTo(0, -.1);
-  	this.enemies.add(this.policeman);
+  	// this.policeman = game.add.sprite(600, game.world.height-500, "policeman");
+  	// this.policeman.animations.add("idle", [0,1], 2, true);
+  	// this.policeman.animations.play("idle");
+  	// this.policeman.scale.setTo(.35, .35);
+  	// this.policeman.anchor.setTo(0, -.1);
+  	// this.enemies.add(this.policeman);
 
-  	// this.scientist = game.add.sprite(800, game.world.height-500, "scientist");
-  	// this.scientist.animations.add("idle", [0,1], 6, true);
-  	// this.scientist.animations.play("idle");
-  	// this.scientist.scale.setTo(.35, .35);
-  	// this.scientist.anchor.setTo(0, -.25);
-  	// this.enemies.add(this.scientist);
-
+  	this.scientist = game.add.sprite(800, game.world.height-500, "scientist");
+  	this.scientist.animations.add("idle", [0,1], 6, true);
+  	this.scientist.animations.play("idle");
+  	this.scientist.scale.setTo(.35, .35);
+  	this.scientist.anchor.setTo(.5, .5);
+  	this.scientist.scale.x*=-1;
+  	this.scientist.anchor.setTo(0, -.25);
+  	this.scientists.add(this.scientist);
   	//let assettest = this.enemies.create(600, game.world.height-227, "policeman");
 
 	//Building group which adds level components
@@ -139,15 +142,18 @@ gameplayState.prototype.create = function () {
   						scientist.animations.add("idle", [0,1], 6, true);
   						scientist.animations.play("idle");
   						scientist.scale.setTo(.35, .35);
+  						scientist.anchor.setTo(.5, .5);
+  						scientist.scale.x*=-1;
   						scientist.anchor.setTo(.1, -.25);
-  						this.enemies.add(scientist);
+  						//this.enemies.add(scientist);
+  						this.scientists.add(scientist);
 					}
 				}
 				else{
 					let temp = this.buildings.create(x*600, game.world.height-600*(y+1)+373, parseBlock(levelData.Data[y][x]%10));
 					temp.enableBody = true;
 					temp.body.immovable = true;
-					console.log(levelData.Data[y][x]/10);
+					//console.log(levelData.Data[y][x]/10);
 					if (levelData.Data[y][x]/10 > 1 && levelData.Data[y][x]/10 < 2)
 					{
 						let policeman = game.add.sprite(x*600, game.world.height-500-600*(y), "policeman");
@@ -163,12 +169,15 @@ gameplayState.prototype.create = function () {
   						scientist.animations.add("idle", [0,1], 6, true);
   						scientist.animations.play("idle");
   						scientist.scale.setTo(.35, .35);
+  						scientist.anchor.setTo(.5, .5);
+					 	scientist.scale.x*=-1;
   						scientist.anchor.setTo(.1, -.25);
-  						this.enemies.add(scientist);
+  						//this.enemies.add(scientist);
+  						this.scientists.add(scientist);
 					}
 				}
 			}
-			console.log(x + " " + y + " " + levelData.Data[y][x]);
+			//console.log(x + " " + y + " " + levelData.Data[y][x]);
 		}
 	}
 	console.log(levelData);
@@ -240,6 +249,9 @@ gameplayState.prototype.update = function () {
   game.physics.arcade.collide(this.enemies, this.buildings);
   //game.physics.arcade.collide(this.player, this.enemies);
   game.physics.arcade.overlap(this.player, this.enemies, this.hitOrMiss, null, this);
+  game.physics.arcade.overlap(this.player, this.scientists, this.hitOrMiss, null, this);
+  	game.physics.arcade.overlap(this.scientists, this.buildings);
+  	this.scientists.forEach(this.moveScientist, this);
 
 	if (this.cursors.left.isDown){
 		this.player.body.velocity.x = -150;
@@ -279,6 +291,18 @@ gameplayState.prototype.updateRun= function(){
 };
 
 gameplayState.prototype.hitOrMiss = function(player, enemy){
+	if (this.charge) //Kill enemy
+	{
+		enemy.kill();
+		//enemy.body.velocity.y = 800;
+		//this.enemies.remove(enemy);
+		//enemy.collideWorldBounds = false;
+	}
+	else //Kill player
+	{
+		player.body.velocity.x = player.body.velocity.y = player.body.acceleration.x = player.body.acceleration.y = 0;
+		player.animations.play("dead");
+	}
 	
 };
 
@@ -288,3 +312,10 @@ gameplayState.prototype.endCooldown =function(){
 	this.ctext.text = "Ready";
 	this.readytocharge=true;
 }
+
+gameplayState.prototype.moveScientist = function(enemy) {
+	if (this.player.x+1000 > enemy.x)
+	{
+		enemy.body.velocity.x = 200;
+	}
+};
