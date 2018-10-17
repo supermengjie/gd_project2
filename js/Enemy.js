@@ -18,16 +18,15 @@ let Enemy = function(pos, type, platform) {
     this.enemy.body.collideWorldBounds = true;
     this.enemy.body.velocity.x = 0;
     this.enemy.body.gravity.y = 300;
-    // this.enemy.play(this.dir);
     this.move(this.dir);
 };
 
 Enemy.prototype.update = function() {
     game.physics.arcade.collide(this.enemy, this.platform);
 
-    // No x movement when falling down
+    // A little x movement when falling down
     if (this.enemy.body.velocity.y > 0) {
-        this.enemy.body.velocity.x = 0;
+        this.enemy.body.velocity.x = 5;
     }
     else if (this.dir === Phaser.RIGHT){
         this.move(Phaser.RIGHT);
@@ -35,7 +34,6 @@ Enemy.prototype.update = function() {
 
     // TODO: This should be moved to gameplay.js ===============================
     if (this.isDead) {
-        // TODO: change the tile
         this.enemy.body.collideWorldBounds = false;
     }
 };
@@ -55,6 +53,7 @@ Enemy.prototype.getX = function() {
     return this.enemy.x;
 }
 
+// Trigger move right action
 Enemy.prototype.flee = function() {
     this.move(Phaser.RIGHT);
 }
