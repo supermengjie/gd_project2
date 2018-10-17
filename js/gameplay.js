@@ -3,6 +3,7 @@ let gameplayState = function() {
 	this.readytocharge=true;
 	this.life= 3;
 	this.supercharge = false;
+	this.positionFromCharge = 0;
 };
 
 gameplayState.prototype.preload = function() {
@@ -193,7 +194,7 @@ gameplayState.prototype.create = function () {
      this.ctext.fixedToCamera= true;
 
      //for lifes
-     this.ltext= this.game.add.text(40,this.game.height-1100,this.life,{font:"40px Arial", fill: "#ff0"});
+     this.ltext= this.game.add.text(40,this.game.height-1100,"Life: "+this.life,{font:"40px Arial", fill: "#ff0"});
      this.ltext.fixedToCamera= true;
 
 
@@ -201,20 +202,20 @@ gameplayState.prototype.create = function () {
 
     this.healths = game.add.group();
 	this.healths.enableBody = true;
-	for (let i=1; i< 5; i++)
+	for (let i=1; i< 2; i++)
      {
      	
-    	let health = this.healths.create(7555*i, 0,"carrot")
+    	let health = this.healths.create(10000*i, 0,"carrot")
   		health.body.gravity.y =3000;
   	}
 
   	this.horseshoes =  game.add.group();
   	this.horseshoes.enableBody = true;
 
-  	for (let i=1; i< 6; i++)
+  	for (let i=1; i< 3; i++)
      {
      	
-    	let horseshoe = this.horseshoes.create(4750*i, 0,"horseshoe");
+    	let horseshoe = this.horseshoes.create(7555*i, 0,"horseshoe");
   		horseshoe.body.gravity.y =3000;
   	}
   	
@@ -236,13 +237,15 @@ gameplayState.prototype.create = function () {
 	else if((swipeCoordX2 > swipeCoordX + swipeMinDistance)&&this.readytocharge)
 	{
         console.log("right");
+        this.positionFromCharge = this.player.x;
         this.player.body.acceleration.x = (100*3+100)*50; 
    		this.charge=true;
-   		 this.returned=false;
+   		this.returned=false;
         this.player.animations.play("charge");
         console.log("chared now:",this.charge);
         this.player.body.velocity.y=0;
         this.player.body.gravity.y=0;
+        this.player.body.drag.x=100;
         game.time.events.add(1000, this.updateRun, this);
 
         if(!this.supercharge)
@@ -345,20 +348,29 @@ gameplayState.prototype.update = function () {
 	}
 
 	if(this.charge){
-		if(this.player.x -300 >100){
-			this.player.body.acceleration.x =0;
+		if(this.player.x - this.positionFromCharge>700){
+			this.player.body.velocity.x =400;
+			//this.charge = false;
+		}
+		else
+		{
+			this.player.body.velocity.x =600;
 		}
 	}
 
 	if(this.life === -1)
 	{
-		this.life=3;
+		this.readytocharge=true;
+		this.life= 3;
+		this.supercharge = false;
 		game.state.start('Gameover');
 	}
 
 	if(this.life === 100)
 	{
-		this.life=3;
+		this.readytocharge=true;
+		this.life= 3;
+		this.supercharge = false;
 		game.state.start('Win');
 	}
 	// if(!this.charge){
